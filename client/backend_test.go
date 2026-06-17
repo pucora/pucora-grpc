@@ -1,6 +1,7 @@
 package client_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/velonetics/lura/v2/config"
@@ -25,9 +26,15 @@ func TestBackendFactoryRequiresCatalog(t *testing.T) {
 		called = true
 		return nil
 	})
-	_ = bf(remote)
-	if !called {
-		t.Fatal("expected fallback when catalog missing")
+	p := bf(remote)
+	if p == nil {
+		t.Fatal("expected error proxy")
+	}
+	if _, err := p(context.Background(), &proxy.Request{}); err == nil {
+		t.Fatal("expected error from error proxy")
+	}
+	if called {
+		t.Fatal("should not fallback to HTTP when backend/grpc is configured")
 	}
 }
 

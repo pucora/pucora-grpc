@@ -17,31 +17,40 @@ import (
 	"google.golang.org/protobuf/types/dynamicpb"
 )
 
+// ErrorProxy returns a proxy that always fails with the given initialization error.
+func ErrorProxy(err error) proxy.Proxy {
+	return func(ctx context.Context, _ *proxy.Request) (*proxy.Response, error) {
+		return nil, err
+	}
+}
+
 // BackendFactory returns a proxy.BackendFactory that handles backend/grpc backends.
 func BackendFactory(logger logging.Logger, bf proxy.BackendFactory) proxy.BackendFactory {
 	return func(remote *config.Backend) proxy.Proxy {
 		logPrefix := "[BACKEND: " + remote.URLPattern + "][gRPC]"
-		cfg, err := grpcconfig.ParseBackendConfig(remote, Namespace)
-		if err != nil {
-			if !errors.Is(err, grpcconfig.ErrNoConfig) {
-				logger.Error(logPrefix, err)
-			}
+		cfg, err := grpcconfig.ParseBackendConfigFromBackend(remote)
+		if errors.Is(err, grpcconfig.ErrNoConfig) {
 			return bf(remote)
+		}
+		if err != nil {
+			logger.Error(logPrefix, err)
+			return ErrorProxy(err)
 		}
 		registry := maingrpc.GlobalRegistry()
 		if registry == nil {
-			logger.Error(logPrefix, "grpc catalog not loaded")
-			return bf(remote)
+			err := fmt.Errorf("grpc catalog not loaded")
+			logger.Error(logPrefix, err)
+			return ErrorProxy(err)
 		}
 		method, err := registry.LookupMethod(remote.URLPattern)
 		if err != nil {
 			logger.Error(logPrefix, err)
-			return bf(remote)
+			return ErrorProxy(err)
 		}
 		pool, err := newConnPool(cfg)
 		if err != nil {
 			logger.Error(logPrefix, err)
-			return bf(remote)
+			return ErrorProxy(err)
 		}
 		logger.Debug(logPrefix, "Component enabled")
 		fullMethod := ensureLeadingSlash(remote.URLPattern)
