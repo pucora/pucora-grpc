@@ -26,6 +26,9 @@ func Bootstrap(cfg config.ServiceConfig, logger logging.Logger) (*catalog.Regist
 	svcCfg, err := grpcconfig.ParseServiceConfig(cfg.ExtraConfig)
 	if err != nil {
 		if err == grpcconfig.ErrNoConfig {
+			if err := grpcconfig.ValidateBackends(cfg.Endpoints, cfg.AsyncAgents, nil); err != nil {
+				return nil, nil, err
+			}
 			return nil, nil, nil
 		}
 		return nil, nil, err
@@ -35,6 +38,9 @@ func Bootstrap(cfg config.ServiceConfig, logger logging.Logger) (*catalog.Regist
 		return nil, nil, err
 	}
 	if err := grpcconfig.ValidateEndpoints(cfg.Endpoints); err != nil {
+		return nil, nil, err
+	}
+	if err := grpcconfig.ValidateBackends(cfg.Endpoints, cfg.AsyncAgents, registry); err != nil {
 		return nil, nil, err
 	}
 	SetGlobalRegistry(registry)
