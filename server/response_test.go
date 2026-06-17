@@ -120,6 +120,25 @@ func TestFillResponseClosesIo(t *testing.T) {
 	}
 }
 
+func TestFillResponseClosesIoWhenDataAlsoSet(t *testing.T) {
+	out := loadFindFlightOutput(t)
+	tracked := &closeTrackReader{Reader: bytes.NewReader([]byte(`unused`))}
+	resp := &proxy.Response{
+		Data: map[string]interface{}{
+			"flights": []interface{}{
+				map[string]interface{}{"id": "FL-006", "destination": "DEN"},
+			},
+		},
+		Io: tracked,
+	}
+	if err := server.TestFillResponse(out, resp, nil, grpcconfig.MethodPublishConfig{}); err != nil {
+		t.Fatal(err)
+	}
+	if !tracked.closed {
+		t.Fatal("expected fillResponse to close resp.Io when Data is also set")
+	}
+}
+
 func TestFillResponseEmpty(t *testing.T) {
 	out := loadFindFlightOutput(t)
 	if err := server.TestFillResponse(out, nil, nil, grpcconfig.MethodPublishConfig{}); err != nil {
