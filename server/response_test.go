@@ -3,6 +3,7 @@ package server_test
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -89,6 +90,32 @@ func TestFillResponseFromProtobufIo(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !strings.Contains(out.String(), "FL-003") {
+		t.Fatalf("unexpected output: %s", out)
+	}
+}
+
+type closeTrackReader struct {
+	io.Reader
+	closed bool
+}
+
+func (r *closeTrackReader) Close() error {
+	r.closed = true
+	return nil
+}
+
+func TestFillResponseClosesIo(t *testing.T) {
+	out := loadFindFlightOutput(t)
+	raw := []byte(`{"flights":[{"id":"FL-005","destination":"MIA"}]}`)
+	tracked := &closeTrackReader{Reader: bytes.NewReader(raw)}
+	resp := &proxy.Response{Io: tracked}
+	if err := server.TestFillResponse(out, resp, nil, grpcconfig.MethodPublishConfig{}); err != nil {
+		t.Fatal(err)
+	}
+	if !tracked.closed {
+		t.Fatal("expected fillResponse to close resp.Io when it implements io.Closer")
+	}
+	if !strings.Contains(out.String(), "FL-005") {
 		t.Fatalf("unexpected output: %s", out)
 	}
 }

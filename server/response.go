@@ -26,7 +26,11 @@ func fillResponse(out proto.Message, resp *proxy.Response, registry *catalog.Reg
 	if resp.Io == nil {
 		return nil
 	}
-	data, err := io.ReadAll(resp.Io)
+	reader := resp.Io
+	if closer, ok := reader.(io.Closer); ok {
+		defer closer.Close()
+	}
+	data, err := io.ReadAll(reader)
 	if err != nil {
 		return err
 	}
