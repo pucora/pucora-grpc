@@ -13,7 +13,7 @@ import (
 	noopmetric "go.opentelemetry.io/otel/metric/noop"
 	nooptrace "go.opentelemetry.io/otel/trace/noop"
 	"google.golang.org/grpc"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 )
 
 func grpcServerOptions(serverCfg *grpcconfig.ServerConfig) []grpc.ServerOption {

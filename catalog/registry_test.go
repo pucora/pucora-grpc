@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/pucora/lura/v2/logging"
-	"github.com/pucora/velonetics-grpc/v2/catalog"
+	"github.com/pucora/pucora-grpc/v2/catalog"
 )
 
 func TestRegistryLoadAndLookup(t *testing.T) {

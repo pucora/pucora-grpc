@@ -3,8 +3,8 @@ package grpc
 import (
 	"github.com/pucora/lura/v2/config"
 	"github.com/pucora/lura/v2/logging"
-	"github.com/pucora/velonetics-grpc/v2/catalog"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	"github.com/pucora/pucora-grpc/v2/catalog"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 )
 
 var globalRegistry = struct {

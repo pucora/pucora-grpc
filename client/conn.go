@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"

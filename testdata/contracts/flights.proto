@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package flight_finder;
 
-option go_package = "github.com/pucora/velonetics-grpc/v2/testdata/flight_finder";
+option go_package = "github.com/pucora/pucora-grpc/v2/testdata/flight_finder";
 
 message Location {
   double latitude = 1;

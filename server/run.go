@@ -13,10 +13,10 @@ import (
 	"github.com/pucora/lura/v2/logging"
 	"github.com/pucora/lura/v2/proxy"
 	router "github.com/pucora/lura/v2/router/gin"
-	veloneticsjose "github.com/pucora/velonetics-jose/v2"
-	"github.com/pucora/velonetics-grpc/v2/catalog"
-	"github.com/pucora/velonetics-grpc/v2/client"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	pucorajose "github.com/pucora/pucora-jose/v2"
+	"github.com/pucora/pucora-grpc/v2/catalog"
+	"github.com/pucora/pucora-grpc/v2/client"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -34,7 +34,7 @@ func RunServer(
 	registry *catalog.Registry,
 	serviceCfg *grpcconfig.ServiceConfig,
 	pf proxy.Factory,
-	rejecterF veloneticsjose.RejecterFactory,
+	rejecterF pucorajose.RejecterFactory,
 	next router.RunServerFunc,
 ) router.RunServerFunc {
 	if serviceCfg == nil || serviceCfg.Server == nil || len(serviceCfg.Server.Services) == 0 {
@@ -119,7 +119,7 @@ func registerServices(
 	serviceCfg *grpcconfig.ServiceConfig,
 	pf proxy.Factory,
 	logger logging.Logger,
-	rejecterF veloneticsjose.RejecterFactory,
+	rejecterF pucorajose.RejecterFactory,
 ) error {
 	for _, svc := range serviceCfg.Server.Services {
 		desc, err := registry.LookupService(svc.Name)
@@ -161,7 +161,7 @@ func makeUnaryHandler(
 	pub grpcconfig.MethodPublishConfig,
 	pf proxy.Factory,
 	logger logging.Logger,
-	rejecterF veloneticsjose.RejecterFactory,
+	rejecterF pucorajose.RejecterFactory,
 ) func(interface{}, context.Context, func(interface{}) error, grpc.UnaryServerInterceptor) (interface{}, error) {
 	methodAuth, authErr := buildMethodAuth(logger, rejecterF, pub.ExtraConfig)
 	return func(_ interface{}, ctx context.Context, dec func(interface{}) error, _ grpc.UnaryServerInterceptor) (interface{}, error) {

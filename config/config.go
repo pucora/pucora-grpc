@@ -10,7 +10,7 @@ import (
 
 const (
 	// ServiceNamespace is the extra_config key for service-level gRPC settings.
-	ServiceNamespace = "github.com/pucora/velonetics-grpc/v2"
+	ServiceNamespace = "github.com/pucora/pucora-grpc/v2"
 )
 
 var (

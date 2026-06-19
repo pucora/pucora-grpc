@@ -1,4 +1,4 @@
-module github.com/pucora/velonetics-grpc/v2
+module github.com/pucora/pucora-grpc/v2
 
 go 1.25.0
 
@@ -7,7 +7,7 @@ require (
 	github.com/soheilhy/cmux v0.1.5
 	github.com/pucora/go-auth0/v2 v2.0.0
 	github.com/pucora/lura/v2 v2.0.1
-	github.com/pucora/velonetics-jose/v2 v2.0.0
+	github.com/pucora/pucora-jose/v2 v2.0.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.63.0
 	go.opentelemetry.io/otel v1.43.0
 	go.opentelemetry.io/otel/metric v1.43.0
@@ -119,6 +119,6 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260120221211-b8f7ae30c516 // indirect
 )
 
-replace github.com/pucora/lura/v2 => ../velonetics-lura
+replace github.com/pucora/lura/v2 => ../lura
 
-replace github.com/pucora/velonetics-jose/v2 => ../velonetics-jose
+replace github.com/pucora/pucora-jose/v2 => ../pucora-jose

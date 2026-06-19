@@ -10,7 +10,7 @@ import (
 	"unicode"
 
 	"github.com/pucora/lura/v2/proxy"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"

@@ -10,7 +10,7 @@ import (
 	auth0 "github.com/pucora/go-auth0/v2"
 	"github.com/pucora/lura/v2/config"
 	"github.com/pucora/lura/v2/logging"
-	veloneticsjose "github.com/pucora/velonetics-jose/v2"
+	pucorajose "github.com/pucora/pucora-jose/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -20,44 +20,44 @@ const authValidatorAlias = "auth/validator"
 
 type methodAuth struct {
 	validator   *auth0.JWTValidator
-	scfg        *veloneticsjose.SignatureConfig
-	rejecter    veloneticsjose.Rejecter
+	scfg        *pucorajose.SignatureConfig
+	rejecter    pucorajose.Rejecter
 	aclCheck    func(string, map[string]interface{}, []string) bool
 	scopesMatch func(string, map[string]interface{}, []string) bool
 }
 
-func buildMethodAuth(logger logging.Logger, rejecterF veloneticsjose.RejecterFactory, extra config.ExtraConfig) (*methodAuth, error) {
+func buildMethodAuth(logger logging.Logger, rejecterF pucorajose.RejecterFactory, extra config.ExtraConfig) (*methodAuth, error) {
 	ep := &config.EndpointConfig{ExtraConfig: normalizeValidatorExtra(extra)}
-	scfg, err := veloneticsjose.GetSignatureConfig(ep)
-	if err == veloneticsjose.ErrNoValidatorCfg {
+	scfg, err := pucorajose.GetSignatureConfig(ep)
+	if err == pucorajose.ErrNoValidatorCfg {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
 	if rejecterF == nil {
-		rejecterF = new(veloneticsjose.NopRejecterFactory)
+		rejecterF = new(pucorajose.NopRejecterFactory)
 	}
-	validator, err := veloneticsjose.NewValidator(scfg, fromCookie, fromHeader)
+	validator, err := pucorajose.NewValidator(scfg, fromCookie, fromHeader)
 	if err != nil {
 		return nil, err
 	}
 	rejecter := rejecterF.New(logger, ep)
 	var aclCheck func(string, map[string]interface{}, []string) bool
 	if scfg.RolesKeyIsNested && strings.Contains(scfg.RolesKey, ".") && (len(scfg.RolesKey) < 4 || scfg.RolesKey[:4] != "http") {
-		aclCheck = veloneticsjose.CanAccessNested
+		aclCheck = pucorajose.CanAccessNested
 	} else {
-		aclCheck = veloneticsjose.CanAccess
+		aclCheck = pucorajose.CanAccess
 	}
 	var scopesMatcher func(string, map[string]interface{}, []string) bool
 	if len(scfg.Scopes) > 0 && scfg.ScopesKey != "" {
 		if scfg.ScopesMatcher == "all" {
-			scopesMatcher = veloneticsjose.ScopesAllMatcher
+			scopesMatcher = pucorajose.ScopesAllMatcher
 		} else {
-			scopesMatcher = veloneticsjose.ScopesAnyMatcher
+			scopesMatcher = pucorajose.ScopesAnyMatcher
 		}
 	} else {
-		scopesMatcher = veloneticsjose.ScopesDefaultMatcher
+		scopesMatcher = pucorajose.ScopesDefaultMatcher
 	}
 	return &methodAuth{
 		validator:   validator,
@@ -100,7 +100,7 @@ func normalizeValidatorExtra(extra config.ExtraConfig) config.ExtraConfig {
 	if extra == nil {
 		return extra
 	}
-	if _, ok := extra[veloneticsjose.ValidatorNamespace]; ok {
+	if _, ok := extra[pucorajose.ValidatorNamespace]; ok {
 		return extra
 	}
 	if raw, ok := extra[authValidatorAlias]; ok {
@@ -108,7 +108,7 @@ func normalizeValidatorExtra(extra config.ExtraConfig) config.ExtraConfig {
 		for k, v := range extra {
 			out[k] = v
 		}
-		out[veloneticsjose.ValidatorNamespace] = raw
+		out[pucorajose.ValidatorNamespace] = raw
 		return out
 	}
 	return extra

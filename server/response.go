@@ -6,8 +6,8 @@ import (
 
 	"github.com/pucora/lura/v2/encoding"
 	"github.com/pucora/lura/v2/proxy"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
-	"github.com/pucora/velonetics-grpc/v2/catalog"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
+	"github.com/pucora/pucora-grpc/v2/catalog"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

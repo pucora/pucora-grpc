@@ -10,9 +10,9 @@ import (
 	"github.com/pucora/lura/v2/config"
 	"github.com/pucora/lura/v2/logging"
 	"github.com/pucora/lura/v2/proxy"
-	maingrpc "github.com/pucora/velonetics-grpc/v2"
-	"github.com/pucora/velonetics-grpc/v2/codec"
-	grpcconfig "github.com/pucora/velonetics-grpc/v2/config"
+	maingrpc "github.com/pucora/pucora-grpc/v2"
+	"github.com/pucora/pucora-grpc/v2/codec"
+	grpcconfig "github.com/pucora/pucora-grpc/v2/config"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/dynamicpb"
 )

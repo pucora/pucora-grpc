@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/pucora/lura/v2/config"
-	"github.com/pucora/velonetics-grpc/v2/catalog"
+	"github.com/pucora/pucora-grpc/v2/catalog"
 )
 
 func TestValidateBackends_noGRPC(t *testing.T) {
